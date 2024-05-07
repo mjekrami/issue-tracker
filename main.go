@@ -6,7 +6,9 @@ import (
 	"github.com/joho/godotenv"
 	"github.com/kelseyhightower/envconfig"
 	"github.com/labstack/echo/v4"
-	"github.com/labstack/echo/v4/middleware"
+	"github.com/mjekrami/issue-tracker/cmd/auth"
+	database "github.com/mjekrami/issue-tracker/cmd/database"
+	"github.com/mjekrami/issue-tracker/cmd/routes"
 	"github.com/mjekrami/issue-tracker/config"
 )
 
@@ -22,9 +24,14 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
+	if err = database.New(cfg.DatabaseHost, cfg.DatabasePort, auth.DBAuth{Username: cfg.DatabaseUsername, Password: cfg.DatabasePassword}); err != nil {
+		panic(err)
+	}
 	e := echo.New()
-	e.Use(middleware.Logger())
-	e.Use(middleware.Logger())
+	// Add all routes
+	routes.HealthCheck(e)
+	routes.UsersRoute(e)
+	routes.IssuesRoute(e)
+	//	e.Use(middleware.Logger())
 	e.Logger.Fatal(e.Start(fmt.Sprintf("%s:%s", cfg.AppHost, cfg.AppPort)))
-	//TODO gracefully shutdown the server
 }
