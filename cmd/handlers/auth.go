@@ -6,7 +6,7 @@ import (
 	"github.com/labstack/echo/v4"
 )
 
-func LoginHandler(c echo.Context) error {
+func HandleLogin(c echo.Context) error {
 	username := c.FormValue("username")
 	password := c.FormValue("password")
 	if username == "mohammad" && password == "safePassword" {

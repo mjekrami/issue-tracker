@@ -5,7 +5,7 @@ import (
 	"github.com/mjekrami/issue-tracker/cmd/handlers"
 )
 
-func Auth(e *echo.Echo) {
+func AuthRoute(e *echo.Echo) {
 	g := e.Group("/auth")
-	g.Add("POST", "/login", handlers.LoginHandler)
+	g.Add("POST", "/login", handlers.HandleLogin)
 }

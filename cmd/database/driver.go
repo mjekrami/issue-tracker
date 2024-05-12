@@ -55,12 +55,47 @@ func ReadQuery(cypher string, ctx context.Context) (any, error) {
 	return res, nil
 }
 
-func ReadQueryWithMapping(cypher string, mapping map[string]any, ctx context.Context) (neo4j.ResultWithContext, error) {
+func ReadQueryWithMapping(cypher string, mapping map[string]any, ctx context.Context) (any, error) {
 	session := (*db).NewSession(ctx, neo4j.SessionConfig{DatabaseName: "neo4j"})
 	defer session.Close(ctx)
-	result, err := session.Run(ctx, cypher, mapping)
+	res, err := session.ExecuteRead(ctx, func(tx neo4j.ManagedTransaction) (any, error) {
+		result, err := tx.Run(ctx, cypher, mapping)
+		if err != nil {
+			return nil, err
+		}
+		return result.Collect(ctx)
+	}, neo4j.WithTxTimeout(time.Second*5), neo4j.WithTxMetadata(map[string]any{"appName": "IssueTracker"}))
 	if err != nil {
 		return nil, ErrQueryDB
 	}
-	return result, nil
+	return res, nil
+}
+
+func WriteQuery(cypher string, ctx context.Context) (any, error) {
+	session := (*db).NewSession(ctx, neo4j.SessionConfig{DatabaseName: "neo4j"})
+	defer session.Close(ctx)
+	res, err := session.ExecuteWrite(ctx, func(tx neo4j.ManagedTransaction) (any, error) {
+		result, _ := tx.Run(ctx, cypher, nil)
+		return result.Collect(ctx)
+	}, neo4j.WithTxTimeout(time.Second*5), neo4j.WithTxMetadata(map[string]any{"appName": "IssueTracker"}))
+	if err != nil {
+		return nil, ErrQueryDB
+	}
+	return res, nil
+}
+
+func WriteQueryWithMapping(cypher string, mapping map[string]any, ctx context.Context) (any, error) {
+	session := (*db).NewSession(ctx, neo4j.SessionConfig{DatabaseName: "neo4j"})
+	defer session.Close(ctx)
+	res, err := session.ExecuteWrite(ctx, func(tx neo4j.ManagedTransaction) (any, error) {
+		result, err := tx.Run(ctx, cypher, mapping)
+		if err != nil {
+			return nil, err
+		}
+		return result.Collect(ctx)
+	}, neo4j.WithTxTimeout(time.Second*5), neo4j.WithTxMetadata(map[string]any{"appName": "IssueTracker"}))
+	if err != nil {
+		return nil, ErrQueryDB
+	}
+	return res, nil
 }

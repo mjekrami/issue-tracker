@@ -5,6 +5,6 @@ import (
 	"github.com/mjekrami/issue-tracker/cmd/handlers"
 )
 
-func HealthCheck(e *echo.Echo) {
-	e.Add("GET", "/health", handlers.HealthCheckHandler).Name = "health-check"
+func HealthCheckRoute(e *echo.Echo) {
+	e.Add("GET", "/health", handlers.HandleHealthCheck).Name = "health-check"
 }
