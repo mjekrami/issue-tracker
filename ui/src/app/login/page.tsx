@@ -40,18 +40,19 @@ export default function Login() {
   }
 
   return (
-    <section className="flex items-center justify-center h-screen">
-      <div className="bg-slate-800 w-fit mx-auto p-10 rounded-md">
+    <section className="flex items-center justify-center h-screen bg-zinc-950">
+      <div className="bg-zinc-900 w-fit mx-auto p-10 rounded-md border-2 border-purple-500/40">
         <form className="space-y-5">
-          <h2 className="text-xl pb-5">
-            Login in <span className="font-bold border-b-2">Issue Tracker</span>
+          <h2 className="text-xl pb-5  text-purple-400">
+            Login in |{" "}
+            <span className="font-bold text-white">Issue Tracker</span>
           </h2>
           <div className="space-y-3">
             <label htmlFor="">Username</label>
             <input
               name="username"
               onChange={handlerChnage}
-              className="block p-2 text-white bg-black/50 rounded-md outline-none w-full"
+              className="block p-2 text-white bg-zinc-700 rounded-md outline-none w-full"
               type="text"
             />
           </div>
@@ -63,10 +64,13 @@ export default function Login() {
               <input
                 onChange={handlerChnage}
                 name="password"
-                className="p-2 text-white bg-black/50 rounded-md outline-none"
+                className="p-2 text-white bg-zinc-700 rounded-md outline-none"
                 type={type}
               />
-              <RemoveRedEyeIcon onClick={handlerChangeType} />
+              <RemoveRedEyeIcon
+                onClick={handlerChangeType}
+                sx={{ cursor: "pointer" }}
+              />
             </div>
           </div>
           <Button onClick={handlerSubmit} title={"Submit"} />

@@ -91,7 +91,15 @@ const initialState: userState = {
       columnId: "11",
       id: uuidv4(),
       status: "backLog" || "pending" || "finish" || "issuse",
-      assignment: [],
+      assignment: ["mohamad", "shervan", "ali"],
+    },
+    {
+      workSpaceId: "1c1h2",
+      description: "create modal",
+      columnId: "11",
+      id: uuidv4(),
+      status: "backLog" || "pending" || "finish" || "issuse",
+      assignment: ["ahmad", "hosein"],
     },
     {
       workSpaceId: "1c1h2",
@@ -99,7 +107,7 @@ const initialState: userState = {
       columnId: "12",
       id: uuidv4(),
       status: "backLog" || "pending" || "finish" || "issuse",
-      assignment: [],
+      assignment: ["payam", "shervan"],
     },
   ],
 };
@@ -209,6 +217,8 @@ const userSlice = createSlice({
       state.columns.push(newColumn);
     },
     deleteColumn(state, action: PayloadAction<columnPayload>) {
+      console.log(action.payload.id, "send");
+
       const newColumns = state.columns.filter(
         (i) => i.id !== action.payload.id
       );

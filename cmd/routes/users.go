@@ -7,7 +7,11 @@ import (
 
 func UsersRoute(e *echo.Echo) {
 	userRoutes := e.Group("/users")
-	userRoutes.Add("GET", "/all", handlers.GetAllUsers).Name = "get-all-users"
-	userRoutes.Add("GET", "/:id", handlers.GetUserByID).Name = "get-user-by-id"
-	userRoutes.Add("POST", "/create-user", handlers.CreateUser).Name = "create-user"
+	// GET
+	userRoutes.Add("GET", "/all", handlers.HandleGetAllUsers).Name = "get-all-users"
+	userRoutes.Add("GET", "/:id", handlers.HandleGetUserByID).Name = "get-user-by-id"
+	userRoutes.Add("GET", "/:name", handlers.HandleGetUserByName).Name = "get-user-by-name"
+
+	// POST
+	userRoutes.Add("POST", "/create", handlers.HandleCreateUser).Name = "create-user"
 }

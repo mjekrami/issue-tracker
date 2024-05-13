@@ -7,6 +7,6 @@ import (
 
 func IssuesRoute(e *echo.Echo) {
 	issueRoutes := e.Group("/issues")
-	issueRoutes.Add("GET", "/all", handlers.GetAllIssues).Name = "get-all-issues"
-	issueRoutes.Add("GET", "/:issueName", handlers.GetIssue).Name = "get-issues-by-name"
+	issueRoutes.Add("GET", "/all", handlers.HandleGetAllIssues).Name = "get-all-issues"
+	issueRoutes.Add("GET", "/:issueName", handlers.HandleGetIssue).Name = "get-issues-by-name"
 }

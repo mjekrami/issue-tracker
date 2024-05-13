@@ -15,7 +15,7 @@ export default function Modal({
         <div className="bg-zinc-700/50 w-full h-screen absolute top-0 left-0 flex items-center justify-center z-10">
           <div
             style={{ width: width ? width : "fit-content" }}
-            className="bg-slate-800 p-10 rounded-md space-y-5  relative"
+            className="bg-zinc-950 p-10 rounded-md space-y-5  relative"
           >
             <div className="">
               {createTitle}
@@ -34,9 +34,9 @@ export default function Modal({
                 >
                   <path
                     stroke="currentColor"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    stroke-width="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth="2"
                     d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"
                   />
                 </svg>

@@ -4,9 +4,11 @@ import { useAppDispatch } from "@/redux/hooks";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { deleteTask, editTask } from "@/redux/slices/userSlice";
-import { GenerateRandomBg } from "@/utils/generateRandomBg";
-import React, { useState } from "react";
-import Modal from "@/components/Modal";
+import React, { useRef, useState } from "react";
+import { motion } from "framer-motion";
+import { useSortable } from "@dnd-kit/sortable";
+import { CSS } from "@dnd-kit/utilities";
+import EidtTask from "./eidtTask";
 
 export default function Task({ task, workId }: any) {
   const [taskInfo, setTaskInfo] = useState({
@@ -18,8 +20,29 @@ export default function Task({ task, workId }: any) {
     status: "backLog",
   });
   const [iseditTask, setIsEditTask] = useState(false);
+  const [openEditTask, setOpenEditTask] = useState(false);
 
   const dispatch = useAppDispatch();
+  const {
+    setNodeRef,
+    attributes,
+    listeners,
+    transform,
+    transition,
+    isDragging,
+  } = useSortable({
+    id: task.id,
+    data: { type: "Task", task },
+  });
+
+  const style = {
+    transition,
+    transform: CSS.Transform.toString(transform),
+  };
+
+  function handlerOpenEditTaskModal() {
+    setOpenEditTask(!openEditTask);
+  }
 
   function handlerOpenEditTask(id?: string) {
     setTaskInfo((prev) => {
@@ -83,47 +106,65 @@ export default function Task({ task, workId }: any) {
     </button>
   );
 
+  if (isDragging)
+    return (
+      <div className="bg-white/10 opacity-40 max-w-[200px] grid gap-2  rounded-lg p-3 h-12 border-2 border-white.40" />
+    );
+
   return (
-    <div
-      key={task.id}
-      className="bg-zinc-800 max-w-[200px] grid gap-2 h-fit rounded-lg p-3"
-    >
-      <h2 className="flex items-center justify-between break-words">
-        {task?.description}
-        <div className="flex">
-          <span
-            onClick={() => handlerOpenEditTask(task.id)}
-            className="cursor-pointer active:bg-white/30 rounded-full p-1 flex items-center"
-          >
-            <EditIcon fontSize="small" />
-          </span>
-          <span
-            onClick={() => handlerDeleteTask(task.id)}
-            className="cursor-pointer active:bg-white/30 rounded-full p-1 flex items-center"
-          >
-            <DeleteIcon fontSize="small" />
-          </span>
-        </div>
-      </h2>
-      <div className="flex gap-1">
-        {task?.assignment?.map((i: string) => (
-          <div key={i} className="relative">
-            <div
-              style={{ backgroundColor: GenerateRandomBg() }}
-              className="rounded-full w-9 h-9 font-bold flex items-center justify-center text-black"
-            >
-              {i?.slice(0, 2)}
+    <>
+      <div
+        ref={setNodeRef}
+        style={style}
+        {...attributes}
+        {...listeners}
+        key={task.id}
+        onClick={handlerOpenEditTaskModal}
+        className="bg-zinc-700/50 hover:bg-zinc-700 border-l-2 border-purple-800 max-w-[300px] w-[200px] grid gap-2 h-fit rounded-r-lg px-3 py-2 items-center"
+      >
+        <motion.div
+          initial={{ y: -200, opacity: 0 }}
+          animate={{ y: 0, opacity: 1 }}
+          transition={{
+            duration: 0.1,
+            stiffness: 360,
+            damping: 50,
+          }}
+        >
+          <p className="flex gap-3 items-center justify-between break-words">
+            <h2 className="flex-1">{task?.description}</h2>
+            <div className="flex">
+              <span
+                onClick={() => handlerOpenEditTask(task.id)}
+                className="cursor-pointer active:bg-white/30 rounded-full p-1 flex items-center"
+              >
+                <EditIcon fontSize="small" />
+              </span>
+              <span
+                onClick={() => handlerDeleteTask(task.id)}
+                className="cursor-pointer active:bg-white/30 rounded-full p-1 flex items-center"
+              >
+                <DeleteIcon fontSize="small" />
+              </span>
             </div>
+          </p>
+          <div className="flex gap-1">
+            {task?.assignment?.map((i: string) => (
+              <div key={i} className="relative">
+                <div className="rounded-full w-7 h-7 font-bold flex items-center justify-center text-sm text-white bg-zinc-600">
+                  {i?.slice(0, 2)}
+                </div>
+              </div>
+            ))}
           </div>
-        ))}
+        </motion.div>
       </div>
-      <Modal
-        show={iseditTask}
-        onClose={handlerOpenEditTask}
-        createActions={createActionsTask}
-        createBody={createBodyTask}
-        createTitle={createTitleTask}
-      />
-    </div>
+      {openEditTask && (
+        <EidtTask
+          task={task}
+          handlerOpenEditTaskModal={handlerOpenEditTaskModal}
+        />
+      )}
+    </>
   );
 }

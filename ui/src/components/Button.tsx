@@ -7,7 +7,7 @@ export default function Button({ title, onClick, className }: any) {
       className={`${
         className
           ? className
-          : "bg-white font-semibold active:bg-black text-black rounded-md px-4 py-2 w-full"
+          : "bg-purple-500 font-semibold text-lg active:bg-black text-white rounded-md px-4 py-2 w-full"
       }`}
     >
       {title}

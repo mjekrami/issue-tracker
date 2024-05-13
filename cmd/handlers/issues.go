@@ -7,19 +7,30 @@ import (
 	"github.com/mjekrami/issue-tracker/cmd/database"
 )
 
-func GetAllIssues(c echo.Context) error {
+var (
+	IssueNotFoundErr = issueNotFoundErr{"issue not found"}
+)
+
+type issueNotFoundErr struct {
+	Reason string `json:"reason" required:"true"`
+}
+
+func HandleGetAllIssues(c echo.Context) error {
 	res, err := database.GetAllIssues()
 	if err != nil {
-		return c.JSON(http.StatusBadGateway, map[string]string{"error": "could get the data from database"})
+		return c.JSON(http.StatusBadGateway, err)
 	}
 	return c.JSON(http.StatusOK, res)
 }
 
-func GetIssue(c echo.Context) error {
+func HandleGetIssue(c echo.Context) error {
 	name := c.Param("issueName")
 	res, err := database.GetIssue(name)
 	if err != nil {
-		return c.JSON(http.StatusBadGateway, map[string]string{"error": "could not get the data from database"})
+		return c.JSON(http.StatusBadGateway, err)
+	}
+	if res == nil {
+		return c.JSON(http.StatusNotFound, IssueNotFoundErr)
 	}
 	return c.JSON(http.StatusOK, res)
 }
